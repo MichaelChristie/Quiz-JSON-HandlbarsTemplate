@@ -1,0 +1,297 @@
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>f32 QUIZ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="assets/css/frontend.css" rel="stylesheet" media="screen">
+    <!-- <link rel="stylesheet" type="text/css" href="assets/css/quiz-style.css"> -->
+
+    <script type='text/javascript' src='assets/js/jquery.js'></script>
+    <script type='text/javascript' src="assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="assets/js/handlebars.js"></script>
+    <script type="text/javascript" src="questions.js"></script>
+    <script type="text/javascript" src="assets/js/quiz-functions.js"></script>
+    <script type="text/javascript" src="assets/js/send-score.js"></script>
+    <style>
+
+    body {
+      background-image: url('assets/images/dummy-header.png');
+      background-repeat: no-repeat;
+      background-position: top center;
+      padding-top: 186px;
+      text-align: center;
+    }
+
+    .page-container {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    .showHideGrid {
+      background-color: #f1f1f1;
+      position: absolute;
+      width: 22px;
+      height:24px;
+      text-align: center;
+      right:0px;
+      top:0px;
+      padding-top:2px;
+    }
+
+    .showHideGrid a {
+      display: block;
+    }
+
+    #grid-switch {
+      min-height: 600px;
+    }
+
+    #grid-switch a {      
+      text-decoration: none;
+    }
+
+    .grid-off {
+      background-image: none;
+    }
+
+    .grid-on {
+      background-image: url('assets/images/22.png');
+      background-repeat: repeat;
+      background-position: top left;
+    }
+
+    .tcerroc { 
+      color: #1c69d4;
+    }
+
+
+
+    </style>
+
+    <script type="text/javascript">
+      //SIMPLE SCRIPT TO SHOW HIDE A 22PX GRID. REMOVE BEFORE RELEASE
+      $( document ).ready(function() {
+        $( "#gridSwitch" ).click(function(e) {
+          console.log("button clicked ");
+          $( "#grid-switch" ).toggleClass("grid-on");
+        });
+      });
+    </script>
+
+
+   </head>
+   <body>
+    <div class="showHideGrid" id="gridSwitch"><a>+</a></div>
+    <div id="grid-switch" class="">
+
+
+     <div class="page-container">
+      <div class="body-content">
+        <div class="quiz-container">
+          <div class="quiz-padding">
+            <h3>The new 4 Series Coup&eacute; Quiz</h3>
+          </div>
+          <div class="color-cat-indicator-bar-long color-cat-indicator-bar-factfile"></div>
+        </div> 
+        <div class="page-spacing"></div>
+        <div id="quiz-container">
+         <div id="intro">
+          <div class="question-count">&nbsp;</div>
+          <div class="question-block">
+            <div class="question-image">
+              <img src="question-images/intro-image.jpg" />
+            </div>
+            <div class="quiz-intro-text" id="quiz-text-intro-top">
+              <h3>Test your knowledge of the new 4 Series Coup&eacute; with our multiple choice quiz.</h3>
+              <div class="spacing20"></div>
+              <a class="btn btn-long btn-primary btn-large" id="start-quiz" />Start Quiz</a>
+            </div>
+          </div>
+        </div> 
+
+
+
+        <script id="template" type="text/x-handlebars-template">
+        {{#each questions}}
+        <div class="step" id="step-{{question_num}}">
+        <div class="relative-wrapper">
+        <div class="question-count"><h3>Question {{question_num}}/15.</h3></div>
+        </div>
+        <div class="question-block">
+        <div class="question-image">
+        <img src="question-images/{{question_image_path}}">
+        </div>
+        <div class="vert-centering">
+          <div class="question-text">
+          <h4>{{{question_text}}}</h4>
+          </div>
+          <div class="question-options">
+            <div class="question-radios">
+              {{#each answers}}
+              <input type="radio" data-question="{{question_num}}" name="s0q{{question_num}}" value="{{option}}" id="s0q{{question_num}}o{{@index}}" />
+              <label {{#if correct}}class="correct"{{/if}} for="s0q{{question_num}}o{{@index}}"><span>{{{ option }}}</span></label>
+              <div class="radiospacing"></div>
+              {{/each}}
+            </div>
+          <div class="feedback_message">{{{feedback_message_incorrect}}}</div>
+          </div>
+        </div>
+        <div class="buttons-holder">
+        <input class="btn btn-primary btn-long pull-right submit quiz-button" type="submit" name="submit_{{question_num}}" id="submit_{{question_num}}" value="Submit" />  
+        <div class="quiz-progress_bar">
+        <div class="quiz-progress"></div>
+        <div class="quiz-progress_text">0% Complete</div>
+        </div>
+        </div>
+        </div>
+        </div>      
+        {{/each}}
+        </script>
+
+        <div id="question-zone"></div>
+
+        <div id="final-step"><!-- was step-19 ***** -->
+          <div class="question-count">&nbsp;</div>
+          <div class="question-block">
+            <div class="question-image">
+              <img src="question-images/intro-image.jpg" />
+            </div> 
+            <div class="quiz-intro-text">
+              <div id="quiz-results-text">
+                <!-- ***** Quiz results display here ***** -->
+              </div>
+              <div class="spacing20"></div>
+              <input class="btn btn-primary btn-long btn-large" type="submit" name="quiz-retry-button" id="quiz-retry-button" value="Retake Quiz" onclick="location.reload();" />
+            </div>
+          </div> 
+        </div> 
+      </div> <!-- /.quiz-container -->
+
+
+      <p><a data-toggle="modal" href="#myModal" id="launchModal" class="btn btn-primary btn-lg">Review Quiz</a></p>
+
+
+    </div><!-- /.body-content -->
+  </div> <!-- /page-container -->
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Review Quiz</h4>
+        </div>
+        <div class="modal-body">
+        <div id="review-zone"></div>
+        <!-- START QUIZ REVIEW -->
+
+        <!-- END QUIZ REVIEW -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-large btn-long">Retake Quiz</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+<script>
+  $( document ).ready(function() {
+    $( "#start-quiz" ).click(function(e) {
+      e.preventDefault();
+      $('#intro').fadeOut('fast');
+      window.setTimeout(function(){
+       $('#step-1').fadeIn('slow');
+       $( ".progress-wrap" ).fadeIn('slow');
+     }, 200);
+    });
+  });
+</script>
+
+
+
+        <script id="template-review" type="text/x-handlebars-template">
+        {{#each questions}}
+        <div class="review-step" id="review-step-{{question_num}}">
+        <div class="relative-wrapper">
+        <div class="question-count"><h3>Question {{question_num}}.</h3></div>
+        </div>
+        <div class="question-block">
+        <div class="question-image">
+        <img src="question-images/{{question_image_path}}">
+        </div>
+        <div class="vert-centering">
+          <div class="question-text">
+          <h4>{{{question_text}}}</h4>
+          </div>
+          <div class="question-options">
+            <div class="question-radios">
+              {{#each answers}}
+              <input type="radio" disabled="disabled" data-question="{{question_num}}" name="s0q{{question_num}}" value="{{option}}" id="s0q{{question_num}}o{{@index}}" />
+              <label {{#if correct}}class="correct"{{/if}}{{#if useranswer}}class="useranswer"{{/if}} for="s0q{{question_num}}o{{@index}}"><span>{{{ option }}}</span></label>
+              <div class="radiospacing"></div>
+              {{/each}}
+            </div>
+            <div class="feedback_message_incorrect">
+              {{{feedback_message_incorrect}}}
+            </div>
+            <div class="feedback_message_correct">
+              {{{feedback_message_incorrect}}}
+            </div>
+          </div>
+        </div>
+        <div class="buttons-holder">
+        <input class="btn btn-long pull-right submit" type="submit" name="submit_{{question_num}}" id="submit_{{question_num}}" value="NEXT >" />  
+        <input class="btn btn-long pull-right submit" type="submit" name="submit_{{question_num}}" id="submit_{{question_num}}" value="< BACK" />
+        </div>
+        </div>
+        </div>      
+        {{/each}}
+        </script>
+
+
+
+
+<script>
+  (function() {
+    var template = Handlebars.compile($('#template').html());
+    var temp = template(data.sections[0]);
+    //console.log(temp);
+    $('#question-zone').append( template(data.sections[0]));
+    //console.log(data.sections[0]);
+    })();
+</script>
+
+<script>
+  (function() {
+    var template_review = Handlebars.compile($('#template-review').html());
+    var temp_rev = template_review(data.sections[0]);
+    $('#review-zone').append( template_review(data.sections[0]));
+  })();
+</script>
+
+<script>
+  (function() {
+    $('#launchModal1').click(function(){
+        console.log('I see ya...launchModal1');
+    });
+  })();
+</script>
+
+<script>
+  (function() {
+    $('#launchModal').click(function(){
+        console.log('I see ya...launchModal');
+    });
+  })();
+</script>
+
+
+
+</div> <!-- END GRID SWITCH  -->
+</body>
+</html>
